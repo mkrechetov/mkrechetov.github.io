@@ -5,4 +5,4 @@ permalink: /contact
 ---
 
 mkrechetow(at)gmail(dot)com
-mikhail.krechetov1@huawei.com
+mikhail(dot)krechetov1(at)huawei(dot)com
