@@ -22,7 +22,7 @@ Animating a model
 =========
 
 The best way to feel the model is through visualization, I believe. The following gif shows ane possible sample of the system's dynamics. Here, we plot susceptible vertices in blue color, infected vertices in red, and removed vertices in gray. Initially, only node 8 is infected; the probability to infect a child equals $0.5$ in this case:
-![sir_dynamics](../assets/img/SIR.gif)
+![sir_dynamics](../assets/notebooks/SIR.gif)
 
 To get animations like this we need only NetworkX and Matplotlib:
 ```
