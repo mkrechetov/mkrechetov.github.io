@@ -6,15 +6,14 @@ categories: Gabriel-graphs
 usemathjax: true
 ---
 
-I first learned about [Gabriel Graphs](https://en.wikipedia.org/wiki/Gabriel_graph) when our team faced the problem of random planar network topology generation. There are many other beatiful models known such as [Urquhart](https://en.wikipedia.org/wiki/Urquhart_graph) and [Relative neighborhood graph](https://en.wikipedia.org/wiki/Relative_neighborhood_graph). In this post I will demostrate a few ways to generate random Gabriel graphs in Pure Python.
+I first learned about [Gabriel Graphs](https://en.wikipedia.org/wiki/Gabriel_graph) when our team faced the problem of random planar network topology generation. There are many other beautiful models known such as [Urquhart](https://en.wikipedia.org/wiki/Urquhart_graph) and [Relative neighborhood graph](https://en.wikipedia.org/wiki/Relative_neighborhood_graph). In this post, I will demonstrate a few ways to generate random Gabriel graphs in Pure Python.
 
 Gabriel Graph Definition
 =========
 
-Graph $G$ is called Euclidean, if its vertex set $V$ is embedded into plane equipped with Euclidean distance. Gabriel graph is a Euclidean graph that satisfies the following criterion: any two vertices $p, q \in V$ are connected by an edge if and only if the circle with diameter $pq$ contains no other vertex from $V\setminus \{p, q\}$.
+Graph $G$ is called Euclidean, if its vertex set $V$ is embedded into a plane equipped with Euclidean distance. Gabriel graph is a Euclidean graph that satisfies the following criterion: any two vertices $p, q \in V$ are connected by an edge if and only if the circle with diameter $pq$ contains no other vertex from $V\setminus \{p, q\}$.
 
-Gabriel graphs are closely related to [Delaunay triangulations](https://en.wikipedia.org/wiki/Delaunay_triangulation) and [Voronoi diagrams](https://en.wikipedia.org/wiki/Voronoi_diagram). In fact, Gabriel graphs are subgraphs of the corresponding Delaunay triangulation and Voronoi diagrams can be used for
-graph generation as we will see below.
+Gabriel graphs are closely related to [Delaunay triangulations](https://en.wikipedia.org/wiki/Delaunay_triangulation) and [Voronoi diagrams](https://en.wikipedia.org/wiki/Voronoi_diagram). Gabriel graphs are subgraphs of the corresponding Delaunay triangulation, and Voronoi diagrams can be used for graph generation as we will see below.
 
 Some Examples
 =========
@@ -28,21 +27,21 @@ from scipy.spatial import Delaunay
 from scipy.spatial import Voronoi, voronoi_plot_2d
 import matplotlib.pyplot as plt
 ```
-Gabriel graph generation starts with sampling $n$ points on euclidean plane. In the figure below we sample 20 points and build their Delaunay triangulation:
+Gabriel graph generation starts with sampling $n$ points on the euclidean plane. In the figure below we sample 20 points and build their Delaunay triangulation:
 ![delaunay_example](../assets/gabriel/Delaunay.png)
 
 The Voronoi diagram of the same set of points is shown below, it will be used later for efficient Gabriel graph generation:
 ![voronoi_example](../assets/gabriel/Voronoi.png)
 
-And finally (spoiler!) lets plot the Gabriel graph of this set points:
+And finally (spoiler!) let's plot the Gabriel graph of this set of points:
 ![gabriel_example](../assets/gabriel/Gabriel.png)
 
 Algorithms: Bruteforce
 =========
 
-The first and most straightforward method to buil Gabriel graph from a set of points does not even involve Delaunay triangulation.
-We can simply iterate all triples of points and check the criterion from Gabriel graph definition. 
-The method has cubic complexity and is ok for small graphs with up to few hundreds of vertices:
+The first and most straightforward method to build a Gabriel graph from a set of points does not even involve Delaunay triangulation.
+We can simply iterate all triples of points and check the criterion from the Gabriel graph definition. 
+The method has cubic complexity and is ok for small graphs with up to a few hundreds of vertices:
 
 ```
 def GabrielViaBruteforce(n, seed=None):
@@ -68,7 +67,7 @@ def GabrielViaBruteforce(n, seed=None):
 Algorithms: Delaunay
 =========
 
-A more clever way to construct Gabriel graph relies on the fact that Gabriel graphs are subgraphs of the corresponding Delaunay triangulation.
+A more clever way to construct a Gabriel graph relies on the fact that Gabriel graphs are subgraphs of the corresponding Delaunay triangulation.
 Thus we can find Delaunay triangulation in $O(n \log{n})$:
 ```
 def DelaunayGraph(points):
@@ -112,8 +111,8 @@ def GabrielViaDelaunay(n, seed=None):
 Algorithms: Delaunay and Voronoi
 =========
 
-Even more fast algorithm after generating Delaunay graph do not iterate all other points but uses a Voronoi diagram to check the condition.
-Here we use the easy fact that an edge $e$ of Delaunay triangulation is in Gabriel graph iff $e$ intersects the boundary of the two corresponding Voronoi regions. Below we provide a fast Python implementation of segment intersection from [here](https://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/):
+An even more fast algorithm after generating the Delaunay graph does not iterate all other points but uses a Voronoi diagram to check the condition.
+Here we use the easy fact that an edge $e$ of Delaunay triangulation is in the Gabriel graph iff $e$ intersects the boundary of the two corresponding Voronoi regions. Below we provide a fast Python implementation of segment intersection from [here](https://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/):
 
 ```
 def ccw(A,B,C):
@@ -122,9 +121,9 @@ def intersect(A,B,C,D):
     return ccw(A,C,D) != ccw(B,C,D) and ccw(A,B,C) != ccw(A,B,D)
 ```
 
-The fast algorithm works as follows. We iterate edges of triangulation and find two corresponding regions of Voronoi diagram.
+The fast algorithm works as follows. We iterate the edges of triangulation and find two corresponding regions of the Voronoi diagram.
 If two regions share a border, there are two cases to consider: the border either contains the point at infinity or not.
-In the first case, we must first substitute the point at infinity by some large but finite point, so that segnment intersection works correctly.
+In the first case, we must first substitute the point at infinity with some large but finite point, so that the segment intersection works correctly.
 
 ```
 def GabrielViaDelaunayVoronoi(n, seed=None):
