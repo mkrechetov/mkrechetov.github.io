@@ -142,7 +142,7 @@ def GabrielViaDelaunayVoronoi(n, seed=None):
     for u, v in delaunayGraph.edges():
         uRegion = set(voronoiDiagram.regions[voronoiDiagram.point_region[u]])
         vRegion = set(voronoiDiagram.regions[voronoiDiagram.point_region[v]])
-        boundary = sorted(list(uRegion.intersection(vRegion)))
+        boundary = sorted(list(uRegion.intersection(vRegion)))[-2:]
         boundaryVertices = [None, voronoiVertices[boundary[1]]]
         
         if (boundary[0] == -1):
