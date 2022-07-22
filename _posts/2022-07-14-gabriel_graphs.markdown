@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Generating Gabriel Graphs."
+title:  "Generating Gabriel graphs."
 date:   2022-07-14 20:41:00 +0300
 categories: Gabriel-graphs
 usemathjax: true
