@@ -105,7 +105,7 @@ def GabrielViaDelaunay(n, seed=None):
                     gabrielGraph.remove_edge(e[0], e[1])
                     break
     
-    return G, points
+    return gabrielGraph, points
 ```
 
 Algorithms: Delaunay and Voronoi
@@ -160,5 +160,5 @@ def GabrielViaDelaunayVoronoi(n, seed=None):
         if intersect(points[u], points[v], boundaryVertices[0], boundaryVertices[1]): 
             gabrielGraph.add_edge(u, v)
     
-    return G, points
+    return gabrielGraph, points
 ```
