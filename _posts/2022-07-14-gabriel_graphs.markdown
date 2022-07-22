@@ -162,3 +162,33 @@ def GabrielViaDelaunayVoronoi(n, seed=None):
     
     return gabrielGraph, points
 ```
+
+Final: Some Animations
+=========
+
+Using some code from the previous [post](https://mkrechetov.github.io/cascade_animation) I want to show how the topology of Gabriel graphs changes
+when we sample additional points on the plane:
+
+```
+def gabriel_gif(max_iter=20, seed=1):
+    fig, ax = plt.subplots()
+    
+    def animate(i, shift, ax):
+        ax.clear()
+        ax.axis('off')
+        gabrielGraph, points = GabrielViaDelaunayVoronoi(i+shift, seed=seed)
+        nx.draw_networkx_nodes(gabrielGraph, points, node_size=2, ax=ax)
+        nx.draw_networkx_edges(gabrielGraph, points, width=0.2, ax=ax)
+        ax.plot([], [], ' ', label="n = {}".format(i+shift))
+        ax.legend()
+        
+    life_animation = animation.FuncAnimation(fig, animate, 
+                                             fargs=(4, ax),
+                                             save_count=max_iter, 
+                                             interval = 1000, 
+                                             repeat = False)
+
+    life_animation.save('gabriels.gif', writer='imagemagick', fps=0.66, dpi=300)
+```
+
+![gabriel_dynamics](../assets/gabriel/gabriels.gif)
