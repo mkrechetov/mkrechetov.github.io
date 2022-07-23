@@ -1,14 +1,14 @@
 ---
 layout: post
-title:  "Graph clustering (Node2Vec, Geometrical and Bisections)."
+title:  "Graph clustering examples."
 date:   2022-07-23 16:00:00 +0300
 categories: Graph-clustering
 usemathjax: true
 ---
 
-In this short post I want to illustrate some graph clustering/partitioning ideas. 
-First, I generate a random gabriel graph with 50 vertices 
-(how to generate such graphs I described in the previous [post](https://mkrechetov.github.io/gabriel_graphs)).
+In this short post, I want to illustrate some graph clustering/partitioning ideas. 
+First, I generate a random Gabriel graph with 50 vertices 
+(how to generate such graphs I described in the previous [post](https://mkrechetov.github.io/gabriel_graphs).
 First, we will need the following imports:
 
 ```
@@ -38,11 +38,11 @@ plt.savefig('gabrielGraph.png', dpi=300)
 Node2Vec
 =========
 
-This one is my favorite; here we use a pretrained [Word2Vec](https://en.wikipedia.org/wiki/Word2vec) model and random walks to extract features for every node. I like the idea for its cross-disciplinarity, 
+This one is my favorite; here we use a pre-trained [Word2Vec](https://en.wikipedia.org/wiki/Word2vec) model and random walks to extract features for every node. I like the idea due to its cross-disciplinarity, 
 here we generate a large number of random walks on a graph and consider every walk as a sentence of some text.
-Finally we use a pretrained Word2Vec model from gensim to get a multidimensional vector for every node. 
+Finally, we use a pre-trained Word2Vec model from gensim to get a multidimensional vector for every node. 
 The intuition is simple - if two words are often met in one sentence, their 'meaning' is correlated; 
-analougously, if two nodes are often visited within one random walk, they are topologically 'close' and so should be their embeddings:
+analogously, if two nodes are often visited within one random walk, they are topologically 'close' and so should be their embeddings:
 
 ```
 def sampleWalk(G, walkDepth, seed=None):
@@ -67,7 +67,7 @@ def graphEmbed(G, walkNum=5000, walkDepth=7):
     return embedding
 ```
 
-Finally, lets use K-Means algorithm and cluster vertices of the graph, considered as a points in 100-dimensional space according to their embedding:
+Finally, let's use the K-Means algorithm and cluster vertices of the graph, considered as points in 100-dimensional space according to their embedding:
 
 ```
 def clusterWV(G, embedding, clusterNum = 4, seed=1):
@@ -100,6 +100,8 @@ What gives us the following partitioning.
 Geometrical
 =========
 
+Gabriel graphs are naturally embedded in the Euclidean plane and we can use this embedding to cluster vertices
+with respect to its coordinates:
 
 ```
 def clusterPOS(G, clusterNum = 4, seed=1):
@@ -123,11 +125,13 @@ def clusterPOS(G, clusterNum = 4, seed=1):
         nx.draw_networkx_nodes(G, pos, nodelist=labelCluster, node_color=clusterColors[label], node_size=20)
 ```
 
-
 ![node2vec](../assets/clustering/geom.png)
 
 Kernighan–Lin Partitioning
 =========
+
+Gabriel graphs are usually too sparse for [Highly Connected Subgraph](https://en.wikipedia.org/wiki/HCS_clustering_algorithm) clustering. 
+So I decided to use a more balanced graph partition that is still based on edge cuts:
 
 ```
 def Bisec(G, clusterNum = 4):
