@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Game of Life on graphs."
-date:   2022-07-12 21:46:00 +0300
+date:   2022-07-10 13:31:00 +0300
 categories: Game-of-life-and-graphs
 usemathjax: true
 ---
@@ -36,8 +36,7 @@ The second example is a path graph on five vertices and one of end-nodes is init
 Universality
 =========
 
-Note that Conway's Game of Life is an instance of the Game of Life on Graphs. Let us consider an infinite grid graph:
-![infinite_grid](../assets/img/infgrid.png) 
-a set of initially alive vertices $A_0$ and an instance of Game of Life on Graphs with parameters $\mathfrak a = 2$, $\mathfrak d = 5$ and $\mathfrak r = 3$. This instance of the Game of Life on Graphs is equivalent to Conway's Game of Life and thus Game of Life of Graphs is also Turing Complete (if we allow infinitely large graphs).
+Halting Problem
+=========
 
-To be continued...
+
