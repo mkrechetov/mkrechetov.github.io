@@ -194,4 +194,4 @@ def add_tx_gv(g, tx, with_labels=True, scale=str(0.2)):
 
 The result is shown below. Now user can click transaction hash or wallet address and proceed with blockchain explorer:
 
-![txurl](../assets/transactions/tx13url.svg)
+<img src="../assets/transactions/tx13url.svg" />
