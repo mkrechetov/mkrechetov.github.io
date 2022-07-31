@@ -6,10 +6,10 @@ categories: Bitcoin-graph
 usemathjax: true
 ---
 
-My another hobby is learning about blockchain technology, and I like to learn by experiment. 
-In this post, I will use [API](https://www.blockchain.com/api) by Blockchain.com to get raw block data in json format.
-This API has a request [limit](https://www.blockchain.com/api/q) of a maximum 1 request every 10 seconds.
-A more efficient way would be running my own bitcoin node; however, this is not always a convenient way.
+My other hobby is learning about blockchain technology, and I like to learn by experiment. 
+In this post, I will use [API](https://www.blockchain.com/api) by Blockchain.com to get raw block data in JSON format.
+This API has a request [limit](https://www.blockchain.com/api/q) of a maximum of 1 request every 10 seconds.
+A more efficient way would be running a bitcoin node; however, this is not always a convenient way.
 
 
 Loading block
@@ -61,11 +61,11 @@ For example, for a recent block with height 747340, mined on 2022-07-31 13:27, i
 ```
 
 
-Constructing graph
+Constructing graph of transactions
 =========
 
 We construct a Digraph object from graphviz. 
-First, we extract list of all transactions (each transaction is a json file itself) and then add transation to the block graph.
+First, we extract the list of all transactions (each transaction is a JSON file itself) and then add transaction to the block graph.
 
 ```
 def block_gv(block):
@@ -77,7 +77,7 @@ def block_gv(block):
     return g
 ```
 
-Each transaction can be considered as double-entry bookkeeping, what is nicely described in [Mastering Bitcoin](https://www.oreilly.com/library/view/mastering-bitcoin/9781491902639/). Thus, graph of transactions can be considered as bipartite directed graph with wallet (address) nodes in one part and transaction nodes in the other. I visualize transactions as follows, red nodes are transactions and green nodes are wallets:
+Each transaction can be considered as double-entry bookkeeping, which is nicely described in [Mastering Bitcoin](https://www.oreilly.com/library/view/mastering-bitcoin/9781491902639/). Thus, the graph of transactions can be considered as a bipartite directed graph with wallet (address) nodes in one part and transaction nodes in the other. I visualize transactions as follows, red nodes are transactions and green nodes are wallets:
 
 
 ```
@@ -103,6 +103,10 @@ def add_tx_gv(g, tx, with_labels=False, scale=str(0.2)):
                 g.node(output_['addr'], label="", fillcolor="green", style="filled", width=scale, height=scale)
             g.edge(tx['hash'], output_['addr'])
 ```
+
+For example, a single [transaction](https://www.blockchain.com/btc/tx/5b2dde7a0b860cc617967c4c0b224339794eb093751f81ae509b8c9231f416fd) number thirteen in block 747340 looks like this:
+
+![tx13](../assets/transactions/tx13.png)
 
 
 Results
