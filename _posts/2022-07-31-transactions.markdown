@@ -148,4 +148,4 @@ for tx in txs:
 Transaction zoo of block 747340 then looks as follows:
 
 
-![zoo747340](../assets/transactions/zoo737340.png)
+![zoo747340](../assets/transactions/zoo747340.png)
