@@ -127,3 +127,25 @@ For blocks 747340 and 747341 I got 'bacteria'-like pictures below:
 ![747340](../assets/transactions/block747340.png)
 ![747341](../assets/transactions/block747341.png)
 
+Transaction zoo
+=========
+
+Transactions can have different numbers of inputs and outputs; 
+here we plot transactions of block 747340 without transaction topology duplication.
+We call (input_size, output_size)-pair (topological) pattern of a transaction.
+If the pattern was already observed we do not plot the corresponding transaction.
+For illustration purposes, we consider only transactions with a small total number of input and outputs.
+
+```
+unique_txs = {}
+for tx in txs:
+    pattern = (tx['vin_sz'], tx['vout_sz'])
+    if pattern not in unique_txs.keys():
+        if pattern[0] + pattern[1] <= 10:
+            unique_txs[pattern] = tx
+```
+
+Transaction zoo of block 747340 then looks as follows:
+
+
+![zoo747340](../assets/transactions/zoo737340.png)
