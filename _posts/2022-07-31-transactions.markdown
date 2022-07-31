@@ -126,6 +126,7 @@ For blocks 747340 and 747341 I got 'bacteria'-like pictures below:
 
 ![747340](../assets/transactions/block747340.png)
 ![747341](../assets/transactions/block747341.png)
+![747342](../assets/transactions/block747342.png)
 
 Transaction zoo
 =========
@@ -146,6 +147,51 @@ for tx in txs:
 ```
 
 Transaction zoo of block 747340 then looks as follows:
-
-
 ![zoo747340](../assets/transactions/zoo747340.png)
+
+Rendering with SVG and URL
+=========
+
+Rendering function can be also updated to support filetypes other than ".png":
+
+```
+def dot_render(g, fname="graph", ftype="png"):
+    g.save("temp.dot")
+    path = os.getcwd()
+    os.system("dot -Kfdp -T{} {}/temp.dot -o {}/{}.{}".format(ftype, path, path, fname, ftype))
+    os.system("rm {}/temp.dot".format(path))
+```
+
+Now we consider ".svg" filetype. This type can now contain hyperlinks when opened in browser.
+The code below not only adds transaction to a graph but also add the corresponding hyperlinks to blockchain explorer: 
+
+```
+def add_tx_gv(g, tx, with_labels=True, scale=str(0.2)):
+    tx_url = "https://www.blockchain.com/btc/tx/"+tx['hash']
+    if with_labels:
+        g.node(tx['hash'], fillcolor="red", style="filled", shape="diamond", width=scale, height=scale, href=tx_url)
+    else:
+        g.node(tx['hash'], label="", fillcolor="red", style="filled", shape="diamond", width=scale, height=scale, href=tx_url)
+        
+    for input_ in tx['inputs']:
+        if 'addr' in input_['prev_out'].keys(): 
+            addr_url = "https://www.blockchain.com/btc/address/" + input_['prev_out']['addr']
+            if with_labels:
+                g.node(input_['prev_out']['addr'], fillcolor="green", style="filled", width=scale, height=scale, href=addr_url)
+            else:
+                g.node(input_['prev_out']['addr'], label="", fillcolor="green", style="filled", width=scale, height=scale, href=addr_url)
+            g.edge(input_['prev_out']['addr'], tx['hash'])
+        
+    for output_ in tx['out']:
+        if 'addr' in output_.keys():
+            addr_url = "https://www.blockchain.com/btc/address/" + output_['addr']
+            if with_labels:
+                g.node(output_['addr'], fillcolor="green", style="filled", width=scale, height=scale, href=addr_url)
+            else:
+                g.node(output_['addr'], label="", fillcolor="green", style="filled", width=scale, height=scale, href=addr_url)
+            g.edge(tx['hash'], output_['addr'])
+```
+
+The result is shown below. Now user can click transaction hash or wallet address and proceed with blockchain explorer:
+
+![txurl](../assets/transactions/tx13url.svg)
