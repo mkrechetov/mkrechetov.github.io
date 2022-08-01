@@ -122,7 +122,7 @@ def dot_render(g, filename="graph"):
     os.system("rm {}/temp.dot".format(path))
 ```
 
-For blocks 747340 and 747341 I got 'bacteria'-like pictures below:
+For blocks 747340, 747341 and 747342 I got 'bacteria'-like pictures below:
 
 ![747340](../assets/transactions/block747340.png)
 ![747341](../assets/transactions/block747341.png)
