@@ -7,8 +7,8 @@ usemathjax: true
 ---
 
 In this short post, I want to illustrate some graph clustering/partitioning ideas. 
-First, I generate a random Gabriel graph with 50 vertices 
-(how to generate such graphs I described in the previous [post](https://mkrechetov.github.io/gabriel_graphs).
+First, I generate a random Gabriel graph with 50 vertices; 
+how to generate such graphs I described in the previous [post](https://mkrechetov.github.io/gabriel_graphs).
 First, we will need the following imports:
 
 ```
