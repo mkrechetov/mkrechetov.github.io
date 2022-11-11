@@ -10,9 +10,9 @@ This post continues the series of posts on [Cascade Models](https://mkrechetov.g
 From time to time I experiment with this type of models on graphs. Last month Misha Chertkov formulated the following question to me: "Is there a closed-form formula (or an efficient algorithm) that computes the most probable final state of a cascade model?".
 Moreover: "What if we want to find K-th most probable final state?"; this question is related to rare event simulation.
 
-I decided to start with some simulations on small graphs, and in this post I will plot the full evolution and the graph of 
+I decided to start with some simulations on small graphs, and in this post, I will plot the full evolution and the graph of 
 all possible outcomes of a cascade model with a few nodes. Given a graph and an initial infection, 
-I will find all possible final states and, assuming that probability to spread and infection is $p$ everywhere, 
+I will find all possible final states and, assuming that the probability to spread and infection is $p$ everywhere, 
 I will plot the corresponding symbolic probability to finish in a given final state.
 
 Preparations
@@ -30,7 +30,7 @@ import itertools
 cwd = os.getcwd()
 ```
 
-Plotting function is as always; the freezing function is needed to works with model states as dictionary keys:
+The plotting function is as always; the freezing function is needed to work with model states as dictionary keys:
 
 
 ```
@@ -68,7 +68,7 @@ What gives us
 Symbolic probabilities
 =========
 
-First, I create a graphviz graph. Nodes of this graph correspond to states of the Cascade Model, and edges correspond to transition events (samples of infection spreads from infected to susceptible nodes). Dictionary "leafs" will store these probabilites for 'final' states with no infected nodes.
+First, I create a graphviz graph. Nodes of this graph correspond to states of the Cascade Model, and edges correspond to transition events (samples of infection spreads from infected to susceptible nodes). Dictionary "leafs" will store these probabilities for 'final' states with no infected nodes.
 
 ```
 g = gv.Digraph('G', filename='process.gv', engine='dot', strict=True)
@@ -77,7 +77,7 @@ g.node("{}{}{}".format(S,I,R), label="",shape=gvshape, image=cwd+"/temp/{}{}{}.p
 leafs = {}
 ```
 
-Next, I bruteforce all possible events. One can think of infection spreading events as a sequence of coin tosses: at every time step, every infected node tosses a coin for each susceptible neighbor (tossing heads means that the neighbor becomes infected). For this graph it is possible to upperbound the maximal number of coin tosses by 15, for example.   
+Next, I brute force all possible events. One can think of infection-spreading events as a sequence of coin tosses: at every time step, every infected node tosses a coin for each susceptible neighbor (tossing heads means that the neighbor becomes infected). For this graph, it is possible to upper-bound the maximal number of coin tosses by 15, for example.   
 
 ```
 allTosses = list(itertools.product([0, 1], repeat=15))
@@ -174,12 +174,12 @@ for tossSeq in coveredTosses:
 
 What gives us an illustration like this:
 
-![evolution](../assets/img/process.gv.pdf)
+![evolution](../assets/img/process.png)
 
 Sanity check
 =========
 
-Finally, we may want to check that all final states are covered by our bruteforce algorithm. So we evaluate symbolic probabilities at any point $p$:
+Finally, we may want to check that all final states are covered by our brute force algorithm. So we evaluate symbolic probabilities at any point $p$:
 
 ```
 all_leaf_exprs = [sum(expr) for leaf, expr in leafs.items()]
