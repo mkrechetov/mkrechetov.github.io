@@ -47,7 +47,7 @@ This unique Id, called URN, is usually a long string but we need only the number
 Now, having the company's URN, we can search through its employees:
 
 ```
-people_by_uni = api.search_people(current_company=[company_urn], **kwargs)
+people_of_company = api.search_people(current_company=[company_urn], **kwargs)
 ```
 
 The result of this query is a list of dictionaries, so we are ready to write a simple script:
