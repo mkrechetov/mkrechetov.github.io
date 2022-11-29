@@ -1,0 +1,130 @@
+---
+layout: post
+title:  "Parsing LinkedIn."
+date:   2022-11-29 21:00:00 +0600
+categories: LinkedIn-Python-API
+usemathjax: true
+---
+
+When looking for a new job, having a referral at a promising company may be crucial (since it may be difficult to pass hr screening these days). Ideally, a referral is somebody you know, however, a person from the same university or town is also ok.
+At first, I was trying to search for potential referrals on LinkedIn and got frustrated quite fast; having a list or CSV file would be a lot more convenient.
+
+Recently, I found a very convenient [tool](https://github.com/tomquirk/linkedin-api) (python-based API). In this short post, I will some use cases.
+
+
+Preparations
+=========
+
+```
+import argparse
+import pandas as pd
+from linkedin_api import Linkedin
+```
+
+First, you should login using your LinkedIn credentials (it will work with any regular profile):
+
+```
+api = Linkedin('login@gmail.com', 'password')
+```
+
+Extract the company's information
+=========
+
+```
+company = api.get_company(company_name)
+```
+
+The result of this query is a dictionary and for further manipulations, we need to extract the company's unique Id:
+
+```
+def get_urn(company):
+    fullUrn = company['entityUrn']
+    return fullUrn[fullUrn.rfind(':')+1:]
+```
+
+This unique Id, called URN, is usually a long string but we need only the number at the end.
+
+Now, having the company's URN, we can search through its employees:
+
+```
+people_by_uni = api.search_people(current_company=[company_urn], **kwargs)
+```
+
+The result of this query is a list of dictionaries, so we are ready to write a simple script:
+
+Result
+=========
+
+Finally, the resulting script may look as follows (be patient, it may take about half a minute for each search call):
+
+```
+import argparse
+import pandas as pd
+from linkedin_api import Linkedin
+
+api = Linkedin('login@gmail.com', 'password')
+
+def get_urn(company):
+    fullUrn = company['entityUrn']
+    return fullUrn[fullUrn.rfind(':')+1:]
+
+def get_uni_list(profile):
+    try:
+        schools = profile['education']
+        unilist = [school['school']['schoolName'] for school in schools]
+        return list(set(unilist))
+    except:
+        return []
+    
+def get_job_list(profile):
+    try:
+        jobs = profile['experience']
+        joblist = [job['companyName'] for job in jobs]
+        return list(set(joblist))
+    except:
+        return []
+        
+    
+def parse(person):
+    try:
+        profile = api.get_profile(person['urn_id'])
+    except:
+        try:
+            profile = api.get_profile(person['public_id'])
+        except:
+            return
+   
+    return {'Company':company_name, 'Employee':person['name'], 'Position':person['jobtitle'], 
+            'Location':person['location'], 'Id':person['public_id'], 
+            'Universities':get_uni_list(profile), 'Experience':get_job_list(profile)
+           }
+    
+    
+parser = argparse.ArgumentParser(description='LinkedIn Parser. Usage example: "python script.py --company google --college "Your College Name""')
+parser.add_argument('--company', type=str, default="google", help='Name of a Company')
+parser.add_argument('--college', type=str, default="MIT", help='Name of your College')
+args = parser.parse_args()
+
+company_name = args.company
+company = api.get_company(company_name)
+company_urn = get_urn(company)
+
+people_by_rus = api.search_people(current_company=[company_urn], profile_languages=['ru'])
+print('Found {} russian-speaking people at the company {}'.format(len(people_by_rus), company_name))
+
+people_by_uni = api.search_people(current_company=[company_urn], keyword_school=args.college)
+print('Found {} people from {} at the company {}'.format(len(people_by_uni), args.college, company_name))
+
+people = people_by_rus + people_by_uni
+
+df = pd.DataFrame(columns=['Company', 'Employee', 'Position', 'Location', 'Id', 'Universities', 'Experience'])
+for counter, person in enumerate(people):
+    print("Parsing person no.{} out of {}.".format(counter, len(people)))
+    
+    result = parse(person)
+    if result:
+        result['Company'] = company_name
+        df = df.append(result, ignore_index=True)
+
+df.to_csv('scraped.csv', index=False, mode='a')
+```
